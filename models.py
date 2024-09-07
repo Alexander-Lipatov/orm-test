@@ -59,19 +59,8 @@ class ModelMeta(type):
         return c
     
 
-
-    
-    
-
-
 class Model(metaclass=ModelMeta):
     objects:Manager
-
-
-
-
-
-    
 
 class UserModel(Model):
     name = CharField()
@@ -87,15 +76,6 @@ class CommentModel(Model):
     post_id = IntegerField()
     user_id = IntegerField()
 
-
-
-
-
-
-
-
-
-    
 
 def gen_migrate():
     if len(sys.argv) > 1 and sys.argv[1] == 'migrate':
@@ -129,7 +109,3 @@ def gen_migrate():
 if __name__ == '__main__':
     gen_migrate()
     
-
-    # comment = CommentModel.objects.create(id=1, user_id = 1, post_id=1, text='asdas')
-    # comments = CommentModel.objects.fetch()
-    # print(comments)
