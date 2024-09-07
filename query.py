@@ -51,6 +51,29 @@ class Select(BaseExp):
         return bool(self._params)
     
 
+class Insert(BaseExp):
+    name = 'INSERT INTO'
+
+    def __init__(self):
+        self._table = None
+        self._columns = []
+        self._values = []
+
+    def add(self, table, columns, values):
+        self._table = table
+        self._columns = columns
+        self._values = values
+
+    def line(self):
+        columns_str = ', '.join(self._columns)
+        values_str = ', '.join(f"'{v}'" if isinstance(v, str) else str(v) for v in self._values)
+        return f"{self._table} ({columns_str}) VALUES ({values_str})"
+    
+    def __bool__(self):
+        return bool(self._table and self._columns and self._values)
+
+    
+
 class From(BaseExp):
     name = 'FROM'
 
@@ -90,7 +113,7 @@ class Where(BaseExp):
 class Query:
 
     def __init__(self):
-        self._data:Dict[str, BaseExp] = {"select":Select(), "from":From(), 'where':Where()}
+        self._data:Dict[str, BaseExp] = {"select":Select(), "from":From(), 'where':Where(), 'insert':Insert()}
 
     def SELECT(self, *args):
         self._data['select'].add(*args)
@@ -104,15 +127,18 @@ class Query:
         self._data['where'].add(exp_type, **kwargs)
         return self
     
+    def INSERT_INTO(self, table, columns, values):
+        self._data['insert'].add(table, columns, values)
+        return self
+    
+
+    
     def _lines(self):
         for key, value in self._data.items():
-            yield value.definition()
+            if value:
+                yield value.definition()
     
     def __str__(self) -> str:
         return ''.join(self._lines())
     
 
-if __name__ == "__main__":
-    q = Query()
-    q = q.SELECT('*').FROM('table').WHERE(id=1, name='Alex', )
-    print(q)

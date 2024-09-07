@@ -1,0 +1,1 @@
+{"model": {"test": "CharField"}, "usermodel": {"name": "CharField", "age": "IntegerField", "password": "IntegerField"}, "postmodel": {"title": "CharField"}, "commentmodel": {"text": "CharField", "post_id": "IntegerField", "user_id": "IntegerField"}}
